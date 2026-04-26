@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow users to read and write only their own progress data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Public data (if any) like election metadata
+    match /elections/{electionId} {
+      allow read: if true;
+      allow write: if false; // Only admin via Admin SDK
+    }
+  }
+}
