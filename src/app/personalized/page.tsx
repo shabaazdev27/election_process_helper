@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  UserCircle, 
   MapPin, 
   Languages, 
   Target, 
@@ -12,7 +11,6 @@ import {
   ArrowRight,
   CheckCircle2
 } from "lucide-react";
-import Link from "next/link";
 
 const states = [
   "Maharashtra", "Delhi", "Uttar Pradesh", "Karnataka", "Tamil Nadu", "West Bengal", "Gujarat"
@@ -27,8 +25,7 @@ const interests = [
 ];
 
 import { useAuth } from "@/components/AuthProvider";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { saveUserPreferencesAction } from "@/lib/db-actions";
 
 export default function PersonalizedPage() {
   const { user } = useAuth();
@@ -41,13 +38,13 @@ export default function PersonalizedPage() {
 
   const handleFinish = async () => {
     if (user) {
-      const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, {
-        preferences: prefs,
-        onboarded: true
-      });
+      await saveUserPreferencesAction(user.uid, prefs);
+    } else {
+      // For guest users, we can handle it locally or just bypass
+      console.log("Onboarding finished as guest:", prefs);
     }
   };
+
 
   const handleInterestToggle = (interest: string) => {
     setPrefs(prev => ({
@@ -195,7 +192,7 @@ export default function PersonalizedPage() {
               </div>
               <h2 className="text-3xl font-bold font-poppins mb-4">Your Path is Ready!</h2>
               <p className="text-foreground/60 mb-10 max-w-sm mx-auto">
-                We've customized your dashboard with guides and timelines specifically for {prefs.state}.
+                We&apos;ve customized your dashboard with guides and timelines specifically for {prefs.state}.
               </p>
               <button 
                 onClick={async () => {

@@ -21,7 +21,7 @@ export default function Footer() {
               <Link href="#" className="text-foreground/60 hover:text-primary transition-colors">
                 <X className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-foreground/60 hover:text-primary transition-colors">
+              <Link href="mailto:khanshabaaz05@gmail.com" className="text-foreground/60 hover:text-primary transition-colors" aria-label="Email Support">
                 <Mail className="h-5 w-5" />
               </Link>
             </div>
@@ -40,10 +40,10 @@ export default function Footer() {
           <div>
             <h3 className="mb-4 font-poppins font-semibold">Support</h3>
             <ul className="flex flex-col gap-2 text-sm text-foreground/60">
-              <li><Link href="#" className="hover:text-primary transition-colors">Help Center</Link></li>
+              <li><Link href="mailto:khanshabaaz05@gmail.com" className="hover:text-primary transition-colors">Help Center</Link></li>
               <li><Link href="/assistant" className="hover:text-primary transition-colors">AI Assistant</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Contact Us</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Report Issues</Link></li>
+              <li><Link href="mailto:khanshabaaz05@gmail.com" className="hover:text-primary transition-colors">Contact Us</Link></li>
+              <li><Link href="mailto:khanshabaaz05@gmail.com" className="hover:text-primary transition-colors">Report Issues</Link></li>
             </ul>
           </div>
 

@@ -133,7 +133,7 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({
               {/* Content */}
               <div className="p-6 space-y-4">
                 <p className="text-foreground/70 leading-relaxed">
-                  You're about to be redirected to the official ECI portal. Please have the
+                  You&apos;re about to be redirected to the official ECI portal. Please have the
                   following information ready:
                 </p>
 
@@ -146,7 +146,7 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({
                       <div>
                         <p className="font-semibold text-sm text-blue-900">Part Number</p>
                         <p className="text-xs text-blue-700 mt-1">
-                          Found in Step 2 of your voter registration process. It's your unique
+                          Found in Step 2 of your voter registration process. It&apos;s your unique
                           identifier in the electoral system.
                         </p>
                       </div>

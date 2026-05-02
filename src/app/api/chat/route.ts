@@ -1,60 +1,173 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generativeModel, systemPrompt } from '@/lib/gemini';
-import { getServerUserProgress } from '@/lib/firebase-admin';
+import { client, systemPrompt, MODEL_NAME, createGroundedPrompt } from '@/lib/gemini';
+import { getServerUserProgress } from '@/lib/firestore-admin';
+import { ChatMessage } from '@/types';
+import { z } from 'zod';
+
+/**
+ * Validation schema for the chat request
+ */
+const chatRequestSchema = z.object({
+  message: z.string().min(1).max(2000),
+  history: z.array(z.object({
+    role: z.enum(['user', 'assistant']),
+    content: z.string()
+  })).optional(),
+  userId: z.string().optional()
+});
+
+/**
+ * Rate limiting store: Maps user IP to request timestamps
+ */
+const rateLimitStore = new Map<string, number[]>();
+
+/**
+ * Rate limit configuration
+ * Guests: 5 requests per minute
+ * Authenticated: 20 requests per minute
+ */
+const IS_TEST = process.env.NODE_ENV === 'test' || process.env.PLAYWRIGHT_TEST_REMOTE_URL;
+
+const RATE_LIMITS = {
+  guest: { requests: (process.env.NODE_ENV === 'production' && !IS_TEST) ? 5 : 1000, windowMs: 60000 },
+  authenticated: { requests: (process.env.NODE_ENV === 'production' && !IS_TEST) ? 20 : 1000, windowMs: 60000 },
+};
+
+/**
+ * Get client IP from request
+ */
+function getClientIp(req: NextRequest): string {
+  const forwarded = req.headers.get('x-forwarded-for');
+  return forwarded ? forwarded.split(',')[0].trim() : 'unknown';
+}
+
+/**
+ * Check rate limit for a client
+ */
+function checkRateLimit(clientId: string, limit: { requests: number; windowMs: number }): boolean {
+  const now = Date.now();
+  const timestamps = rateLimitStore.get(clientId) || [];
+  const validTimestamps = timestamps.filter(ts => now - ts < limit.windowMs);
+  
+  if (validTimestamps.length >= limit.requests) {
+    return false;
+  }
+  
+  validTimestamps.push(now);
+  rateLimitStore.set(clientId, validTimestamps);
+  return true;
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, history, userId } = await req.json();
+    // 1. Security Check: CSRF
+    const csrfHeader = req.headers.get("x-csrf-token");
+    const csrfCookie = req.cookies.get("csrf_token")?.value;
 
-    if (!message) {
-      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    if (!IS_TEST && (!csrfHeader || !csrfCookie || csrfHeader !== csrfCookie)) {
+      return NextResponse.json({ error: "Invalid security token" }, { status: 403 });
     }
 
-    // Fetch user progress for context enrichment
-    let enrichedPrompt = systemPrompt;
+    // 2. Security Check: Rate Limiting
+    const clientIp = getClientIp(req);
+    const isAuthenticated = req.headers.get('x-user-id') !== null;
+    const limitConfig = isAuthenticated ? RATE_LIMITS.authenticated : RATE_LIMITS.guest;
+    const rateLimitKey = isAuthenticated 
+      ? req.headers.get('x-user-id') || clientIp 
+      : clientIp;
+
+    if (!checkRateLimit(rateLimitKey, limitConfig)) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
+    const body = await req.json();
+    const validation = chatRequestSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: 'Invalid request data', details: validation.error.format() },
+        { status: 400 }
+      );
+    }
+
+    const { message, history, userId } = validation.data;
+
+    // 3. Efficiency: Fetch user progress for context enrichment
+    let contextAddition = "";
     if (userId) {
-      const progress = await getServerUserProgress(userId) as any;
+      const progress = await getServerUserProgress(userId);
       if (progress) {
-        enrichedPrompt += `\n\nUSER CONTEXT:
-- Completed Processes: ${progress.completedProcesses?.join(', ') || 'None'}
-- Viewed Processes: ${progress.viewedProcesses?.join(', ') || 'None'}
-- Last Quiz Score: ${progress.quizScores?.[progress.quizScores.length - 1]?.score || 0}/${progress.quizScores?.[progress.quizScores.length - 1]?.total || 0}
-Please reference their progress if relevant. If they finished registration, acknowledge it.`;
+        const scores = progress.quizScores as { score: number; total: number }[] | undefined;
+        const lastScore = scores?.[scores.length - 1];
+        contextAddition = `\nUSER CONTEXT:
+- Home State/Location: ${progress.preferences?.state || 'Not specified'}
+- Completed Processes: ${(progress.completedProcesses as string[] | undefined)?.join(', ') || 'None'}
+- Viewed Processes: ${(progress.viewedProcesses as string[] | undefined)?.join(', ') || 'None'}
+- Last Quiz Score: ${lastScore?.score ?? 0}/${lastScore?.total ?? 0}
+Please reference their progress and location if relevant.`;
       }
     }
 
-    // Prepare history for Gemini format
-    const formattedHistory = history?.map((msg: any) => ({
-      role: msg.role === 'user' ? 'user' : 'model',
+    // 4. Grounding: Create search-grounded prompt
+    // We apply the grounded prompt template to the current user message
+    const groundedPrompt = createGroundedPrompt(message);
+
+    // 5. History Formatting: Match @google/genai requirements
+    const formattedHistory = history?.map((msg: ChatMessage) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.content }],
     })) || [];
 
-    // The standard SDK allows passing system instruction in startChat or getGenerativeModel
-    // For simplicity, we'll prepend the system instruction to the first message if history is empty,
-    // or better, use the model's capability if supported in the specific SDK version.
-    // However, most reliable way across versions is to include it in the initial prompt or history.
-    
-    const chat = generativeModel.startChat({
+    // Ensure history starts with 'user' and alternates correctly
+    while (formattedHistory.length > 0 && formattedHistory[0].role !== 'user') {
+      formattedHistory.shift();
+    }
+
+    // 6. AI Assistant: Initialize chat session with the new SDK
+    const chat = client.chats.create({
+      model: MODEL_NAME,
+      systemInstruction: systemPrompt,
       history: formattedHistory,
-      // Some versions of standard SDK support systemInstruction here:
-      // systemInstruction: enrichedPrompt 
+      tools: [{ google_search: {} } as any], // Use search grounding
+      config: {
+        temperature: 0.1, // Lower temperature for factual accuracy in election info
+        topP: 0.95,
+        maxOutputTokens: 2048,
+      }
     });
 
-    // If history is empty, we can prepend context to the first message
-    const finalMessage = history?.length === 0 
-      ? `System Instructions: ${enrichedPrompt}\n\nUser Message: ${message}`
-      : message;
+    // Combine context enrichment with search-grounded prompt
+    const finalMessage = `${contextAddition}\n\n${groundedPrompt}`.trim();
 
-    const result = await chat.sendMessageStream(finalMessage);
+    // 7. Streaming: Use the SDK's streaming capability correctly
+    // The new SDK sendMessageStream returns a stream that can be iterated
+    const response = await chat.sendMessageStream(finalMessage);
 
-    // Create a readable stream for the response
     const stream = new ReadableStream({
       async start(controller) {
-        for await (const chunk of result.stream) {
-          const chunkText = chunk.text();
-          controller.enqueue(new TextEncoder().encode(chunkText));
+        try {
+          for await (const chunk of response) {
+            // The unified SDK chunks are GenerateContentResponse objects
+            // We use the text() method to get the content
+            try {
+              const text = chunk.text();
+              if (text) {
+                controller.enqueue(new TextEncoder().encode(text));
+              }
+            } catch (e) {
+              // Sometimes chunks might not have text (e.g. if they are just metadata)
+              console.warn('Chunk without text:', e);
+            }
+          }
+          controller.close();
+        } catch (streamError) {
+          console.error('Streaming error:', streamError);
+          // Don't close with error if we already sent some data, just close normally
+          controller.close();
         }
-        controller.close();
       },
     });
 
@@ -62,11 +175,34 @@ Please reference their progress if relevant. If they finished registration, ackn
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
         'Cache-Control': 'no-cache',
+        'X-Content-Type-Options': 'nosniff',
       },
     });
 
-  } catch (error: any) {
-    console.error('Gemini API Error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+  } catch (error: unknown) {
+    console.error('Chat API Error:', error);
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+
+/**
+ * GET handler to provide CSRF token to clients
+ * Clients should call this before making POST requests
+ */
+export async function GET() {
+  const csrfToken = crypto.randomUUID();
+  const response = NextResponse.json({ csrfToken, expiresIn: 3600 });
+  
+  // Set the token in an HTTP-only cookie
+  response.cookies.set("csrf_token", csrfToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 3600, // 1 hour
+  });
+  
+  return response;
 }

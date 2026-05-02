@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/components/AuthProvider";
-import { getUserProgress, UserProgress } from "@/lib/db";
+import { getUserProgress } from "@/lib/db";
+import { UserProgress } from "@/types";
 import Link from "next/link";
 import { 
   CheckCircle2, 
@@ -96,7 +97,9 @@ export default function Dashboard() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40" />
             <input 
               type="text" 
+              id="election-search"
               placeholder="Search elections..." 
+              aria-label="Search elections"
               className="pl-10 pr-4 py-2 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
@@ -147,11 +150,11 @@ export default function Dashboard() {
           </motion.section>
 
           {/* Progress Overview */}
-          <section>
+          <section aria-labelledby="progress-heading">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold font-poppins">Current Progress</h2>
-              <button className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
-                View all <ChevronRight className="h-4 w-4" />
+              <h2 id="progress-heading" className="text-xl font-bold font-poppins">Current Progress</h2>
+              <button className="text-sm font-medium text-primary hover:underline flex items-center gap-1" aria-label="View all progress">
+                View all <ChevronRight className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
             
@@ -178,8 +181,11 @@ export default function Dashboard() {
                       <h3 className="font-semibold text-sm">{card.title}</h3>
                       <p className="text-xs text-foreground/60">{card.date}</p>
                     </div>
-                    <div className={`text-xs font-bold px-2 py-1 rounded-lg bg-background ${card.color}`}>
-                      {card.status}
+                    <div className="flex flex-col items-end gap-1">
+                      <LiveDataBadge variant="outline" className="scale-75 origin-right -mr-2" />
+                      <div className={`text-xs font-bold px-2 py-1 rounded-lg bg-background ${card.color}`}>
+                        {card.status}
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -188,15 +194,15 @@ export default function Dashboard() {
           </section>
 
           {/* Election Lists */}
-          <section>
+          <section aria-labelledby="guides-heading">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold font-poppins">Election Guides</h2>
-              <button className="flex items-center gap-1 text-xs font-bold bg-primary/10 text-primary px-3 py-1.5 rounded-lg hover:bg-primary/20 transition-colors">
-                <Plus className="h-4 w-4" /> Add Election
+              <h2 id="guides-heading" className="text-xl font-bold font-poppins">Election Guides</h2>
+              <button className="flex items-center gap-1 text-xs font-bold bg-primary/10 text-primary px-3 py-1.5 rounded-lg hover:bg-primary/20 transition-colors" aria-label="Add a new election guide">
+                <Plus className="h-4 w-4" aria-hidden="true" /> Add Election
               </button>
             </div>
             <div className="bg-card border border-border rounded-3xl overflow-hidden">
-              <table className="w-full text-left">
+              <table className="w-full text-left" aria-label="Available Election Guides">
                 <thead className="bg-neutral-50 border-b border-border">
                   <tr>
                     <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-foreground/40">Election Name</th>
@@ -229,6 +235,7 @@ export default function Dashboard() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-3">
+                          <LiveDataBadge variant="outline" className="scale-75 origin-right" />
                           {p.status === "Active" && (
                             <VerifyButton
                               state="TN"

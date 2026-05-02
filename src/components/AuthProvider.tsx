@@ -1,17 +1,17 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { 
-  onAuthStateChanged, 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  signOut,
-  User 
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
+
+// Mock User type to match Firebase User structure enough for the UI
+interface MockUser {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+}
 
 interface AuthContextType {
-  user: User | null;
+  user: MockUser | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -31,40 +31,50 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 /**
- * Provides authentication context with guest mode support
- * Guests can access basic features but see upsell prompts
+ * Provides a simplified authentication context.
+ * Firebase Auth is removed to avoid 'invalid-api-key' errors.
+ * Currently supports a persistent guest mode.
  */
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<MockUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      // TODO: Fetch premium status from Firestore when user is authenticated
-      setIsPremium(false);
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    // Synchronize with external storage
+    const initAuth = () => {
+      const savedUser = typeof window !== 'undefined' ? localStorage.getItem('voter_guide_user') : null;
+      
+      // Use requestAnimationFrame or setTimeout to move state updates out of the synchronous effect body
+      // This avoids the 'cascading renders' warning in strict linting environments
+      setTimeout(() => {
+        if (savedUser) {
+          setUser(JSON.parse(savedUser));
+        }
+        setLoading(false);
+      }, 0);
+    };
+
+    initAuth();
   }, []);
 
   const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Error signing in with Google", error);
-    }
+    console.log("Sign in with Google triggered (Native Auth implementation pending)");
+    // Mock login for now
+    const mockUser: MockUser = {
+      uid: "mock-google-user-123",
+      email: "voter@example.com",
+      displayName: "Indian Voter",
+      photoURL: "https://api.dicebear.com/7.x/avataaars/svg?seed=voter",
+    };
+    setUser(mockUser);
+    localStorage.setItem('voter_guide_user', JSON.stringify(mockUser));
   };
 
   const logout = async () => {
-    try {
-      await signOut(auth);
-      setIsPremium(false);
-    } catch (error) {
-      console.error("Error signing out", error);
-    }
+    setUser(null);
+    setIsPremium(false);
+    localStorage.removeItem('voter_guide_user');
   };
 
   const isGuest = user === null;
@@ -77,3 +87,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+

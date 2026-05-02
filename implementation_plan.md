@@ -4,7 +4,7 @@ This plan outlines the steps to reach 100% compliance with user requirements for
 
 ## 📐 Updated Architecture
 - **Auth Strategy**: Dual-mode (Authenticated vs. Guest).
-- **AI Strategy**: Gemini 1.5 Flash + Web Grounding (Search Retrieval).
+- **AI Strategy**: Gemini 25 Flash + Web Grounding (Search Retrieval).
 - **Data Strategy**: Hybrid (Mock UI with dynamic "Live Link" metadata for ECI authorized portals).
 
 ---

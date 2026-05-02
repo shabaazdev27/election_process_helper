@@ -1,0 +1,23 @@
+{
+  "skill_name": "electionguide-dev",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to add a new guest message limit feature. Currently guests can send unlimited messages, but I want to limit them to 5 messages before showing an upsell modal. Can you help me implement this? The AuthProvider is in src/components/AuthProvider.tsx and the chat page is at src/app/assistant/page.tsx. I need to ensure it's fully typed with TypeScript, has accessibility features, and includes test cases.",
+      "expected_output": "Complete implementation including: modified AuthProvider with messageCount tracking, updated assistant page with limit logic, TypeScript interfaces, Cypress E2E test for guest message limits, and Jest tests for the limiting logic. Must include accessibility considerations (ARIA labels, semantic HTML) and Lighthouse performance checks.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm implementing the Gemini API integration for the election assistant with search grounding. The route is at src/app/api/chat/route.ts. I need to: 1) Ensure the API validates all inputs with Zod schemas, 2) Add rate limiting, 3) Verify responses cite ECI sources, 4) Include proper error handling, and 5) Make sure it has security rules and comprehensive tests. What's the best way to structure this for production?",
+      "expected_output": "Production-ready implementation including: Zod schema validation for request body, rate limiting middleware (with strategy options), Gemini prompt construction that enforces ECI citations, comprehensive error handling with meaningful error codes, security considerations, Jest tests for prompt construction and error cases, and Cypress E2E test for the full user flow. Should follow best practices for Google Services integration.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I'm building a new ElectionGuide component that shows a step-by-step voter registration process with animations. The component needs to: be fully accessible (WCAG AA), use TypeScript for type safety, integrate Framer Motion for animations, be tested with Cypress for E2E, have unit tests with Jest, and maintain a 95+ Lighthouse score. Here's the design spec: [component has 5 steps, each collapsible, with progress tracking, keyboard navigation, and live ECI data links]. Can you structure this properly?",
+      "expected_output": "Complete production-ready component including: Full TypeScript interfaces and type definitions, semantic HTML structure with ARIA labels for accessibility, Framer Motion animations (performance-optimized), Tailwind CSS styling, exhaustive Jest unit tests (>80% coverage), Cypress E2E test covering step navigation and accessibility, Lighthouse optimization strategies, and documentation of accessibility features. Should demonstrate mastery of all project standards.",
+      "files": []
+    }
+  ]
+}

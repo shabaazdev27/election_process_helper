@@ -15,7 +15,10 @@ export default function Home() {
   return (
     <div className="relative overflow-hidden">
       {/* Hero Section */}
-      <section className="relative px-4 pt-20 pb-32 md:pt-32 md:pb-48">
+      <section 
+        className="relative px-4 pt-20 pb-32 md:pt-32 md:pb-48"
+        aria-labelledby="hero-heading"
+      >
         {/* Background Gradients */}
         <div className="absolute top-0 -left-4 w-72 h-72 bg-primary/20 rounded-full blur-3xl -z-10" />
         <div className="absolute bottom-0 -right-4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl -z-10" />
@@ -26,8 +29,8 @@ export default function Home() {
             AI-Powered ECI Guide
           </div>
           
-          <h1 className="text-4xl md:text-7xl font-bold font-poppins mb-6 leading-tight tracking-tight">
-            Navigating the World's <br />
+          <h1 id="hero-heading" className="text-4xl md:text-7xl font-bold font-poppins mb-6 leading-tight tracking-tight">
+            Navigating the World&apos;s <br />
             <span className="text-primary">Largest Democracy</span>
           </h1>
           
@@ -69,12 +72,15 @@ export default function Home() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 bg-card">
+      <section 
+        className="py-24 bg-card"
+        aria-labelledby="features-heading"
+      >
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold font-poppins mb-4">Master the Indian Voting Process</h2>
+            <h2 id="features-heading" className="text-3xl md:text-5xl font-bold font-poppins mb-4">Master the Indian Voting Process</h2>
             <p className="text-foreground/60 max-w-2xl mx-auto">
-              From Form 6 registration to finding your part number on the electoral roll, we've got you covered.
+              From Form 6 registration to finding your part number on the electoral roll, we&apos;ve got you covered.
             </p>
           </div>
           
@@ -107,7 +113,7 @@ export default function Home() {
                 <p className="text-foreground/60 leading-relaxed mb-6">
                   {feature.description}
                 </p>
-                <Link href="#" className="inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline">
+                <Link href={i === 0 ? "/process" : i === 1 ? "/timeline" : "/assistant"} className="inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline">
                   View Guide <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -117,11 +123,14 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24">
+      <section 
+        className="py-24"
+        aria-labelledby="cta-heading"
+      >
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="relative rounded-[3rem] bg-primary p-12 md:p-20 overflow-hidden text-center text-white shadow-2xl shadow-primary/40">
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
-            <h2 className="text-3xl md:text-5xl font-bold font-poppins mb-6 relative z-10">Ready to cast your vote?</h2>
+            <h2 id="cta-heading" className="text-3xl md:text-5xl font-bold font-poppins mb-6 relative z-10">Ready to cast your vote?</h2>
             <p className="text-white/80 mb-10 max-w-xl mx-auto relative z-10 text-lg">
               Join millions of responsible citizens. Check your name in the electoral roll today.
             </p>

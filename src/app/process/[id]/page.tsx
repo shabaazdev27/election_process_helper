@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { motion } from "framer-motion";
 import { 
   CheckCircle, 
   Circle, 
-  ChevronRight, 
   Info, 
   FileCheck, 
   Clock, 
@@ -55,20 +54,21 @@ const mockProcess = {
   ]
 };
 
-export default function ProcessDetail({ params }: { params: { id: string } }) {
+export default function ProcessDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    if (user && params.id) {
-      markProcessViewed(user.uid, params.id as string);
+    if (user && id) {
+      markProcessViewed(user.uid, id);
     }
-  }, [user, params.id]);
+  }, [user, id]);
 
   const handleStepComplete = async (index: number) => {
     setCurrentStep(index + 1);
     if (user && index === mockProcess.steps.length - 1) {
-      await markProcessCompleted(user.uid, params.id as string);
+      await markProcessCompleted(user.uid, id);
     }
   };
 
@@ -177,7 +177,7 @@ export default function ProcessDetail({ params }: { params: { id: string } }) {
             >
               <h3 className="font-bold font-poppins mb-2 text-emerald-900">Verify Your Status</h3>
               <p className="text-xs text-emerald-800 mb-4">
-                Once you've completed Step 2, use your Part Number to verify your status on the official ECI portal.
+                Once you&apos;ve completed Step 2, use your Part Number to verify your status on the official ECI portal.
               </p>
               <VerifyButton
                 state="TN"
