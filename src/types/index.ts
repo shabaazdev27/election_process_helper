@@ -43,7 +43,7 @@ export interface UserProgress {
   /** Array of quiz results */
   quizScores: QuizScore[];
   /** ISO 8601 timestamp of last access */
-  lastAccessed: string;
+  lastAccessed: any;
   /** Overall completion percentage (0–100) */
   completionPercentage?: number;
   /** Whether the user has completed the onboarding flow */

@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  poweredByHeader: false,
+  compress: true,
+  turbopack: {
+    root: __dirname,
+  },
   async headers() {
     return [
       {
@@ -35,7 +41,6 @@ const nextConfig: NextConfig = {
     ];
   },
   // Optimizations
-  poweredByHeader: false,
   reactStrictMode: true,
 };
 

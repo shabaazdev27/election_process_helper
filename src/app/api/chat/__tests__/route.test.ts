@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { client } from '@/lib/gemini';
 
 // Shared mocks for all tests
 jest.mock('@/lib/gemini', () => ({
@@ -64,6 +65,15 @@ describe('Chat API Route', () => {
 
     const response = await POST(req);
     expect(response.status).toBe(200);
+
+    const createMock = client.chats.create as jest.Mock;
+    expect(createMock).toHaveBeenCalled();
+    const chatInstance = createMock.mock.results[0]?.value as {
+      sendMessageStream: jest.Mock;
+    };
+    expect(chatInstance.sendMessageStream).toHaveBeenCalledWith(
+      expect.objectContaining({ message: expect.any(String) })
+    );
   });
 
   it('should reject invalid request bodies even with valid CSRF', async () => {

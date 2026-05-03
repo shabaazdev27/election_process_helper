@@ -18,46 +18,167 @@ import { markProcessCompleted, markProcessViewed } from "@/lib/db";
 import LiveDataBadge from "@/components/LiveDataBadge";
 import VerifyButton from "@/components/VerifyButton";
 
-const mockProcess = {
-  id: "voter-id-registration",
-  title: "New Voter Registration (Form 6)",
-  description: "Participate in the world's largest democratic exercise. Register for your EPIC card today.",
-  steps: [
-    {
-      title: "Check Eligibility",
-      description: "Ensure you are an Indian citizen and 18+ years of age.",
-      details: "You must be a citizen of India and have attained the age of 18 years on the qualifying date (usually Jan 1st of the election year).",
-      documents: ["Aadhaar Card", "Birth Certificate"],
-      duration: "2 mins"
-    },
-    {
-      title: "Prepare Digital Copies",
-      description: "Keep your photograph and address proof ready for upload.",
-      details: "You will need a passport-sized photograph (JPEG) and scanned copies of age and address proofs (PDF/JPEG).",
-      documents: ["Passport Photo", "Electricity/Gas Bill"],
-      duration: "5 mins"
-    },
-    {
-      title: "Fill Form 6 on Voter Portal",
-      description: "Complete the application on the NVSP or Voter Service Portal.",
-      details: "Provide your constituency details, family EPIC numbers (if any), and current address accurately.",
-      documents: [],
-      duration: "15 mins"
-    },
-    {
-      title: "Field Verification",
-      description: "The Booth Level Officer (BLO) will visit for verification.",
-      details: "A BLO will visit your residence to verify the documents and details provided in the application.",
-      documents: [],
-      duration: "BLO Visit"
-    }
-  ]
+const processGuides: Record<string, {
+  id: string;
+  title: string;
+  description: string;
+  steps: Array<{
+    title: string;
+    description: string;
+    details: string;
+    documents: string[];
+    duration: string;
+  }>;
+}> = {
+  "voter-id-registration": {
+    id: "voter-id-registration",
+    title: "New Voter Registration (Form 6)",
+    description: "Participate in the world's largest democratic exercise. Register for your EPIC card today.",
+    steps: [
+      {
+        title: "Check Eligibility",
+        description: "Ensure you are an Indian citizen and 18+ years of age.",
+        details: "You must be a citizen of India and have attained the age of 18 years on the qualifying date (usually Jan 1st of the election year).",
+        documents: ["Aadhaar Card", "Birth Certificate"],
+        duration: "2 mins"
+      },
+      {
+        title: "Prepare Digital Copies",
+        description: "Keep your photograph and address proof ready for upload.",
+        details: "You will need a passport-sized photograph (JPEG) and scanned copies of age and address proofs (PDF/JPEG).",
+        documents: ["Passport Photo", "Electricity/Gas Bill"],
+        duration: "5 mins"
+      },
+      {
+        title: "Fill Form 6 on Voter Portal",
+        description: "Complete the application on the NVSP or Voter Service Portal.",
+        details: "Provide your constituency details, family EPIC numbers (if any), and current address accurately.",
+        documents: [],
+        duration: "15 mins"
+      },
+      {
+        title: "Field Verification",
+        description: "The Booth Level Officer (BLO) will visit for verification.",
+        details: "A BLO will visit your residence to verify the documents and details provided in the application.",
+        documents: [],
+        duration: "BLO Visit"
+      }
+    ]
+  },
+  "epic-correction": {
+    id: "epic-correction",
+    title: "Correction (Form 8)",
+    description: "Update your voter details such as name, address, photo, or other particulars using Form 8.",
+    steps: [
+      {
+        title: "Check Eligibility",
+        description: "Ensure you are already registered as a voter.",
+        details: "You must have an existing EPIC (Voter ID) to request corrections.",
+        documents: ["EPIC Card"],
+        duration: "1 min"
+      },
+      {
+        title: "Identify Correction Type",
+        description: "Choose the field(s) you want to correct (name, address, photo, etc.).",
+        details: "You can correct multiple fields in a single application.",
+        documents: [],
+        duration: "2 mins"
+      },
+      {
+        title: "Prepare Supporting Documents",
+        description: "Gather documents supporting your correction (e.g., address proof, photo).",
+        details: "Upload scanned copies as per the correction type.",
+        documents: ["Address Proof", "Photo (if updating photo)", "Other relevant documents"],
+        duration: "5 mins"
+      },
+      {
+        title: "Fill Form 8 Online",
+        description: "Submit the correction request on the Voter Portal (NVSP).",
+        details: "Fill in the required details and upload documents.",
+        documents: [],
+        duration: "10 mins"
+      },
+      {
+        title: "Track Status",
+        description: "Monitor your correction request status online.",
+        details: "You will be notified once the correction is processed.",
+        documents: [],
+        duration: "Varies"
+      }
+    ]
+  },
+  "aadhaar-linking": {
+    id: "aadhaar-linking",
+    title: "Aadhaar Linking (Form 6B)",
+    description: "Link your Aadhaar number with your EPIC card for enhanced security.",
+    steps: [
+      {
+        title: "Login to Voter Portal",
+        description: "Access the NVSP or Voter Service Portal.",
+        details: "Use your credentials to log in.",
+        documents: ["EPIC Card", "Aadhaar Card"],
+        duration: "2 mins"
+      },
+      {
+        title: "Navigate to Aadhaar Linking",
+        description: "Select the Aadhaar linking option (Form 6B).",
+        details: "Enter your Aadhaar number and verify details.",
+        documents: [],
+        duration: "2 mins"
+      },
+      {
+        title: "Submit and Confirm",
+        description: "Submit the form and confirm linking.",
+        details: "You will receive confirmation once linking is successful.",
+        documents: [],
+        duration: "1 min"
+      }
+    ]
+  },
+  "booth-locator": {
+    id: "booth-locator",
+    title: "Find Your Polling Station",
+    description: "Locate your designated polling booth using your EPIC number or name.",
+    steps: [
+      {
+        title: "Go to Polling Station Finder",
+        description: "Visit the official ECI or state portal.",
+        details: "Use the Polling Station Finder tool.",
+        documents: ["EPIC Card"],
+        duration: "2 mins"
+      },
+      {
+        title: "Enter Details",
+        description: "Provide your EPIC number or name and other required info.",
+        details: "Ensure accuracy for correct booth details.",
+        documents: [],
+        duration: "2 mins"
+      },
+      {
+        title: "View Booth & BLO Info",
+        description: "See your polling station and Booth Level Officer details.",
+        details: "Note down booth address and BLO contact.",
+        documents: [],
+        duration: "1 min"
+      },
+      {
+        title: "Visit on Poll Day",
+        description: "Go to your assigned booth on election day.",
+        details: "Carry your EPIC and follow instructions at the booth.",
+        documents: [],
+        duration: "On Poll Day"
+      }
+    ]
+  }
 };
 
 export default function ProcessDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Get the guide for the current id
+  const guide = processGuides[id];
 
   useEffect(() => {
     if (user && id) {
@@ -67,10 +188,23 @@ export default function ProcessDetail({ params }: { params: Promise<{ id: string
 
   const handleStepComplete = async (index: number) => {
     setCurrentStep(index + 1);
-    if (user && index === mockProcess.steps.length - 1) {
+    if (user && guide && index === guide.steps.length - 1) {
       await markProcessCompleted(user.uid, id);
     }
   };
+
+  if (!guide) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <Link href="/process" className="inline-flex items-center gap-2 text-sm font-bold text-foreground/40 hover:text-primary mb-8 transition-colors">
+          <ArrowLeft className="h-4 w-4" />
+          Back to Guides
+        </Link>
+        <h1 className="text-2xl font-bold mb-4">Guide Not Found</h1>
+        <p className="text-foreground/60">No process guide found for this selection.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -83,9 +217,9 @@ export default function ProcessDetail({ params }: { params: Promise<{ id: string
         {/* Left Column: Progress & Content */}
         <div className="lg:col-span-2 space-y-12">
           <section>
-            <h1 className="text-4xl font-bold font-poppins mb-4">{mockProcess.title}</h1>
+            <h1 className="text-4xl font-bold font-poppins mb-4">{guide.title}</h1>
             <p className="text-lg text-foreground/60 leading-relaxed">
-              {mockProcess.description}
+              {guide.description}
             </p>
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -98,7 +232,7 @@ export default function ProcessDetail({ params }: { params: Promise<{ id: string
           </section>
 
           <div className="space-y-4">
-            {mockProcess.steps.map((step, i) => (
+            {guide.steps.map((step, i) => (
               <motion.div 
                 key={i}
                 initial={{ opacity: 0, x: -20 }}

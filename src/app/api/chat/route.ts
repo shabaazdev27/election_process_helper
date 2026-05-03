@@ -195,7 +195,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       const errorMessages = validation.error.issues
         .map((e) => `${e.path.join('.')}: ${e.message}`)
         .join('; ');
-      
+
       return NextResponse.json(
         {
           error: 'Invalid request data',
@@ -258,16 +258,17 @@ Reference the user's progress context in your response when relevant.
 
     // 7. AI ASSISTANT: Initialize chat session with Gemini
     // Configure with search grounding enabled
+    const englishPrompt = "Please respond to all questions in English only. Do not respond in any other language.";
     const chatConfig = {
       model: MODEL_NAME,
       history: formattedHistory,
-      tools: [{ googleSearch: {} }] as Parameters<typeof client.chats.create>[0]['tools'],
+      tools: [{ googleSearch: {} }],
       config: {
         temperature: 0.1,
         topP: 0.95,
         maxOutputTokens: 2048,
       },
-      ...(systemPrompt ? { systemInstruction: systemPrompt } : {}),
+      systemInstruction: systemPrompt ? systemPrompt + "\n\n" + englishPrompt : englishPrompt,
     };
 
     const chat = client.chats.create(chatConfig);
@@ -277,7 +278,9 @@ Reference the user's progress context in your response when relevant.
 
     // 8. STREAMING: Send message and stream response
     // Gemini streams text chunks as they are generated
-    const response = await chat.sendMessageStream(finalPrompt as unknown as Parameters<typeof chat.sendMessageStream>[0]);
+    const response = await chat.sendMessageStream({
+      message: finalPrompt,
+    });
 
     // Create a ReadableStream for the response
     const stream = new ReadableStream<Uint8Array>({
