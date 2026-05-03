@@ -58,4 +58,45 @@ describe('Gemini AI Integration (gemini.ts)', () => {
       }).toThrow('Neither VERTEX_PROJECT_ID nor GEMINI_API_KEY is defined');
     });
   });
+
+  describe('Google Services Requirements', () => {
+    it('system prompt should enforce ECI citations', () => {
+      expect(systemPrompt).toContain('Citations');
+      expect(systemPrompt).toContain('official sources');
+      expect(systemPrompt).toContain('ECI');
+    });
+
+    it('system prompt should enforce non-partisan tone', () => {
+      expect(systemPrompt).toContain('Impartiality');
+      expect(systemPrompt).toContain('Never support');
+      expect(systemPrompt).toContain('political party');
+    });
+
+    it('system prompt should mention search grounding', () => {
+      expect(systemPrompt).toContain('Search Grounding');
+      expect(systemPrompt).toContain('web search');
+    });
+
+    it('createGroundedPrompt should include priority domains', () => {
+      const prompt = createGroundedPrompt('test');
+      expect(prompt).toContain('voters.eci.gov.in');
+      expect(prompt).toContain('eci.gov.in');
+      expect(prompt).toContain('nvsp.in');
+    });
+
+    it('createGroundedPrompt should instruct citation inclusion', () => {
+      const prompt = createGroundedPrompt('test');
+      expect(prompt).toContain('Include citations');
+      expect(prompt).toContain('According to');
+    });
+
+    it('createGroundedPrompt should request next steps', () => {
+      const prompt = createGroundedPrompt('test');
+      expect(prompt).toContain('Next Steps');
+    });
+
+    it('model should be gemini-2.5-flash', () => {
+      expect(MODEL_NAME).toBe('gemini-2.5-flash');
+    });
+  });
 });

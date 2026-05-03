@@ -187,7 +187,7 @@ export default function PersonalizedPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="text-center py-8"
             >
-              <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center text-primary mx-auto mb-6">
+              <div className="w-20 h-20 bg-primary/10 rounded-4xl flex items-center justify-center text-primary mx-auto mb-6">
                 <Sparkles className="h-10 w-10" />
               </div>
               <h2 className="text-3xl font-bold font-poppins mb-4">Your Path is Ready!</h2>

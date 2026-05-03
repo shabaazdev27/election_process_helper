@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Vote, LayoutDashboard, FileText, Calendar, MessageSquare, GraduationCap, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { LanguageSelector } from "./LanguageSelector";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -60,7 +61,7 @@ export default function Navbar() {
                 {isActive && (
                   <motion.div
                     layoutId="navbar-indicator"
-                    className="absolute -bottom-[1.45rem] left-0 right-0 h-0.5 bg-primary"
+                    className="absolute bottom-[-1.45rem] left-0 right-0 h-0.5 bg-primary"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
@@ -70,6 +71,13 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
+          <LanguageSelector 
+            onLanguageChange={(_lang) => {
+              // Language change is handled via localStorage and context
+              // Chat component will read from localStorage
+            }}
+            className="hidden sm:block"
+          />
           <div className="hidden sm:block px-4 py-2 text-xs font-bold text-primary/40 uppercase tracking-widest border border-primary/10 rounded-full">
             ECI Guided
           </div>
@@ -96,6 +104,14 @@ export default function Navbar() {
             className="md:hidden border-t border-border bg-background overflow-hidden"
           >
             <div className="flex flex-col p-4 gap-4">
+              <div className="sm:hidden">
+                <LanguageSelector 
+                  onLanguageChange={(_lang) => {
+                    // Language change is handled via localStorage and context
+                    setIsOpen(false);
+                  }}
+                />
+              </div>
               {navItems.map((item) => {
                 const isActive = pathname.startsWith(item.href);
                 return (

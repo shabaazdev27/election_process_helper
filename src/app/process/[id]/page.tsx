@@ -307,7 +307,7 @@ export default function ProcessDetail({ params }: { params: Promise<{ id: string
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-[2rem]"
+              className="p-6 bg-linear-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-4xl"
             >
               <h3 className="font-bold font-poppins mb-2 text-emerald-900">Verify Your Status</h3>
               <p className="text-xs text-emerald-800 mb-4">
@@ -336,7 +336,7 @@ export default function ProcessDetail({ params }: { params: Promise<{ id: string
             </div>
 
             {/* Official Link */}
-            <div className="p-6 bg-card border border-border rounded-[2rem]">
+            <div className="p-6 bg-card border border-border rounded-4xl">
               <h4 className="text-sm font-bold font-poppins mb-4 flex items-center gap-2">
                 <Info className="h-4 w-4 text-primary" /> Official Resource
               </h4>

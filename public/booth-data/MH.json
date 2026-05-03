@@ -1,0 +1,40 @@
+{
+  "state": "MH",
+  "stateName": "Maharashtra",
+  "booths": [
+    {
+      "id": "MH-MUMB-001",
+      "boothNumber": "001",
+      "name": "Municipal School, Dadar",
+      "address": "Dadar East, Mumbai, MH 400014",
+      "latitude": 19.0176,
+      "longitude": 72.8254,
+      "district": "Mumbai",
+      "constituency": "Mumbai North",
+      "amenities": {
+        "pwdAccess": true,
+        "parkingAvailable": false,
+        "refreshments": true,
+        "wheelchairRamp": true
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    },
+    {
+      "id": "MH-MUMB-002",
+      "boothNumber": "002",
+      "name": "Government High School, Bandra",
+      "address": "Bandra West, Mumbai, MH 400050",
+      "latitude": 19.0596,
+      "longitude": 72.8295,
+      "district": "Mumbai",
+      "constituency": "Mumbai North West",
+      "amenities": {
+        "pwdAccess": true,
+        "parkingAvailable": true,
+        "refreshments": false,
+        "wheelchairRamp": false
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    }
+  ]
+}

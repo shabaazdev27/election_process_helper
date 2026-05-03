@@ -20,6 +20,7 @@ const customJestConfig = {
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@google-cloud/translate$': '<rootDir>/__mocks__/@google-cloud/translate.js',
   },
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',

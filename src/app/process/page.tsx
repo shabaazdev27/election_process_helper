@@ -34,11 +34,11 @@ const processes = [
     category: "Verification"
   },
   {
-    id: "booth-locator",
+    id: "booth-finder",
     title: "Find Your Polling Station",
-    description: "Use your EPIC number or name to locate your designated booth and BLO details.",
-    steps: 4,
-    duration: "5 mins",
+    description: "Use your location to find nearby polling booths, check amenities, and get directions.",
+    steps: 3,
+    duration: "2 mins",
     category: "Polling"
   }
 ];
@@ -77,7 +77,7 @@ export default function ProcessPage() {
         {processes.map((p) => (
           <Link 
             key={p.id} 
-            href={`/process/${p.id}`}
+            href={p.id === "booth-finder" ? `/process/booth-finder` : `/process/${p.id}`}
             className="group p-8 bg-card border border-border rounded-[2.5rem] hover:shadow-2xl hover:shadow-primary/5 transition-all flex flex-col h-full"
           >
             <div className="flex items-center justify-between mb-6">

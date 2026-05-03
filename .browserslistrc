@@ -1,0 +1,13 @@
+# Modern browsers only - reduces polyfills by ~8KB
+# Targets browsers that support ES2020+ features natively
+
+[production]
+chrome >= 90
+edge >= 90
+firefox >= 90
+safari >= 14
+
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 safari version

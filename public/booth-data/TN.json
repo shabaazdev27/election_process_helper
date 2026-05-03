@@ -1,0 +1,91 @@
+{
+  "state": "TN",
+  "stateName": "Tamil Nadu",
+  "booths": [
+    {
+      "id": "TN-CHENN-001",
+      "boothNumber": "001",
+      "name": "Government School, Mylapore",
+      "address": "Mylapore High Road, Chennai, TN 600004",
+      "latitude": 13.0344,
+      "longitude": 80.2718,
+      "district": "Chennai",
+      "constituency": "Chennai North",
+      "amenities": {
+        "pwdAccess": true,
+        "parkingAvailable": true,
+        "refreshments": false,
+        "wheelchairRamp": true
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    },
+    {
+      "id": "TN-CHENN-002",
+      "boothNumber": "002",
+      "name": "St. Mary's Higher Secondary School",
+      "address": "Teynampet, Chennai, TN 600018",
+      "latitude": 13.0406,
+      "longitude": 80.2578,
+      "district": "Chennai",
+      "constituency": "Chennai Central",
+      "amenities": {
+        "pwdAccess": true,
+        "parkingAvailable": false,
+        "refreshments": true,
+        "wheelchairRamp": false
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    },
+    {
+      "id": "TN-CHENN-003",
+      "boothNumber": "003",
+      "name": "Chettinad High School",
+      "address": "Chattarrams, Chennai, TN 600031",
+      "latitude": 13.0827,
+      "longitude": 80.2707,
+      "district": "Chennai",
+      "constituency": "Chennai South",
+      "amenities": {
+        "pwdAccess": true,
+        "parkingAvailable": true,
+        "refreshments": true,
+        "wheelchairRamp": true
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    },
+    {
+      "id": "TN-CHENN-004",
+      "boothNumber": "004",
+      "name": "Municipal School, Adyar",
+      "address": "Adyar, Chennai, TN 600020",
+      "latitude": 13.0050,
+      "longitude": 80.2528,
+      "district": "Chennai",
+      "constituency": "Chennai South",
+      "amenities": {
+        "pwdAccess": false,
+        "parkingAvailable": true,
+        "refreshments": false,
+        "wheelchairRamp": false
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    },
+    {
+      "id": "TN-CHENN-005",
+      "boothNumber": "005",
+      "name": "Ethiraj College",
+      "address": "Guindy, Chennai, TN 600032",
+      "latitude": 13.0055,
+      "longitude": 80.2287,
+      "district": "Chennai",
+      "constituency": "Chennai South",
+      "amenities": {
+        "pwdAccess": true,
+        "parkingAvailable": true,
+        "refreshments": false,
+        "wheelchairRamp": true
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    }
+  ]
+}

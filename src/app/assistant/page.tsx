@@ -298,7 +298,7 @@ export default function AssistantPage() {
               placeholder="Ask anything about the election process..."
               aria-label="Chat input"
               data-testid="chat-input"
-              className="w-full pl-4 pr-14 py-4 bg-background border border-border rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none min-h-[60px]"
+              className="w-full pl-4 pr-14 py-4 bg-background border border-border rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none min-h-15"
               rows={1}
               disabled={isLoading}
             />

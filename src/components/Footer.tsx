@@ -15,10 +15,10 @@ export default function Footer() {
               Empowering citizens with knowledge about election processes through AI-driven education and interactive tools.
             </p>
             <div className="flex items-center gap-4">
-              <Link href="#" className="text-foreground/60 hover:text-primary transition-colors">
+              <Link href="#" className="text-foreground/60 hover:text-primary transition-colors" aria-label="GitHub Repository">
                 <GitBranch className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-foreground/60 hover:text-primary transition-colors">
+              <Link href="#" className="text-foreground/60 hover:text-primary transition-colors" aria-label="Twitter/X">
                 <X className="h-5 w-5" />
               </Link>
               <Link href="mailto:khanshabaaz05@gmail.com" className="text-foreground/60 hover:text-primary transition-colors" aria-label="Email Support">
@@ -58,7 +58,7 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="mt-12 border-t border-border pt-8 text-center text-sm text-foreground/40">
+        <div className="mt-12 border-t border-border pt-8 text-center text-sm text-foreground/60">
           <p>© {new Date().getFullYear()} ElectionGuide India. All rights reserved.</p>
         </div>
       </div>

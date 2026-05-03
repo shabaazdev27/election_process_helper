@@ -10,7 +10,7 @@ const MOCK_PROGRESS: UserProgress = {
   completedProcesses: ["voter-id-registration"],
   viewedProcesses: ["voter-id-registration"],
   quizScores: [],
-  lastAccessed: new Date(),
+  lastAccessed: new Date().toISOString(),
   completionPercentage: 25
 };
 

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { client, systemPrompt, MODEL_NAME, createGroundedPrompt } from '@/lib/gemini';
+import { client, getSystemPromptForLanguage, MODEL_NAME, createGroundedPrompt } from '@/lib/gemini';
 import { getServerUserProgress } from '@/lib/firestore-admin';
-import { ChatMessage, UserProgress } from '@/types';
+import { ChatMessage, UserProgress, LanguageCode } from '@/types';
+import { translate } from '@/lib/translate';
 import { z } from 'zod';
 
 /**
@@ -55,6 +56,10 @@ const chatRequestSchema = z.object({
     .string()
     .min(1, 'If provided, userId must not be empty')
     .max(256, 'userId exceeds maximum length')
+    .optional(),
+  targetLanguage: z
+    .enum(['en', 'hi', 'ta', 'te', 'mr', 'kn'] as const)
+    .default('en')
     .optional(),
 });
 
@@ -205,7 +210,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       );
     }
 
-    const { message, history, userId } = validation.data;
+    const { message, history, userId, targetLanguage = 'en' } = validation.data;
 
     // 4. EFFICIENCY: Fetch user progress for context enrichment
     // Personalize responses based on user's learning path
@@ -244,6 +249,9 @@ Reference the user's progress context in your response when relevant.
     // Instructs Gemini to search official ECI sources for current information
     const groundedPrompt = createGroundedPrompt(message);
 
+    // Get multilingual system prompt based on target language
+    const systemPrompt = getSystemPromptForLanguage(targetLanguage);
+
     // 6. Format chat history for @google/genai SDK
     // Convert { role, content } to SDK format { role, parts }
     const formattedHistory = history?.map((msg: Omit<ChatMessage, 'timestamp'>) => ({
@@ -277,31 +285,51 @@ Reference the user's progress context in your response when relevant.
     const finalPrompt = `${systemPrompt}\n\n${contextAddition}\n\n${groundedPrompt}`.trim();
 
     // 8. STREAMING: Send message and stream response
-    // Gemini streams text chunks as they are generated
+    // Collect full response for translation if needed
+    const responseChunks: string[] = [];
     const response = await chat.sendMessageStream({
       message: finalPrompt,
     });
+
+    // Collect all chunks
+    for await (const chunk of response) {
+      try {
+        const text = typeof (chunk as { text?: unknown }).text === 'string'
+          ? (chunk as { text: string }).text
+          : null;
+        if (text) {
+          responseChunks.push(text);
+        }
+      } catch (chunkError) {
+        console.debug('[chat-api] Chunk processing error:', chunkError);
+      }
+    }
+
+    // Join all chunks to form complete response
+    const fullResponse = responseChunks.join('');
+
+    // 9. TRANSLATION: Translate response if target language is not English
+    let finalResponse = fullResponse;
+    if (targetLanguage !== 'en') {
+      try {
+        const translationResult = await translate(fullResponse, targetLanguage as LanguageCode, 'en');
+        finalResponse = translationResult.translated;
+      } catch (translationError) {
+        console.warn('[chat-api] Translation error:', translationError);
+        // Fall back to original response if translation fails
+        finalResponse = fullResponse;
+      }
+    }
 
     // Create a ReadableStream for the response
     const stream = new ReadableStream<Uint8Array>({
       async start(controller: ReadableStreamDefaultController<Uint8Array>) {
         try {
-          for await (const chunk of response) {
-            try {
-              const text = typeof (chunk as { text?: unknown }).text === 'string'
-                ? (chunk as { text: string }).text
-                : null;
-              if (text) {
-                controller.enqueue(new TextEncoder().encode(text));
-              }
-            } catch (chunkError) {
-              console.debug('[chat-api] Chunk processing error:', chunkError);
-            }
-          }
+          controller.enqueue(new TextEncoder().encode(finalResponse));
           controller.close();
         } catch (streamError) {
-          console.error('[chat-api] Streaming error:', streamError);
-          controller.close();
+          console.error('[chat-api] Stream error:', streamError);
+          controller.error(streamError);
         }
       },
     });

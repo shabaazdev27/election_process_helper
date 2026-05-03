@@ -134,7 +134,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl"
+            className="p-6 bg-linear-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl"
           >
             <h2 className="text-lg font-bold font-poppins text-blue-900 mb-2">
               Verify Your Voter Status
@@ -259,7 +259,7 @@ export default function Dashboard() {
         {/* Sidebar */}
         <div className="space-y-8">
           {/* Profile Card */}
-          <div className="p-6 bg-primary text-white rounded-[2rem] shadow-xl shadow-primary/20 relative overflow-hidden">
+          <div className="p-6 bg-primary text-white rounded-4xl shadow-xl shadow-primary/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
             <div className="relative z-10">
               <h3 className="text-lg font-bold font-poppins mb-1">Your Profile</h3>
@@ -282,7 +282,7 @@ export default function Dashboard() {
           </div>
 
           {/* Quick AI Help */}
-          <div className="p-6 bg-card border border-border rounded-[2rem]">
+          <div className="p-6 bg-card border border-border rounded-4xl">
             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
               <MessageSquare className="h-5 w-5" />
             </div>

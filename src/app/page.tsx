@@ -129,7 +129,7 @@ export default function Home() {
       >
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="relative rounded-[3rem] bg-primary p-12 md:p-20 overflow-hidden text-center text-white shadow-2xl shadow-primary/40">
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-full bg-linear-to-br from-white/10 to-transparent pointer-events-none" />
             <h2 id="cta-heading" className="text-3xl md:text-5xl font-bold font-poppins mb-6 relative z-10">Ready to cast your vote?</h2>
             <p className="text-white/80 mb-10 max-w-xl mx-auto relative z-10 text-lg">
               Join millions of responsible citizens. Check your name in the electoral roll today.

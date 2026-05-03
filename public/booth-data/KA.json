@@ -1,0 +1,40 @@
+{
+  "state": "KA",
+  "stateName": "Karnataka",
+  "booths": [
+    {
+      "id": "KA-BGLR-001",
+      "boothNumber": "001",
+      "name": "Government Pre-University College",
+      "address": "Indiranagar, Bangalore, KA 560038",
+      "latitude": 12.9720,
+      "longitude": 77.6412,
+      "district": "Bengaluru",
+      "constituency": "Bangalore South",
+      "amenities": {
+        "pwdAccess": true,
+        "parkingAvailable": true,
+        "refreshments": false,
+        "wheelchairRamp": true
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    },
+    {
+      "id": "KA-BGLR-002",
+      "boothNumber": "002",
+      "name": "National Public School",
+      "address": "Koramangala, Bangalore, KA 560034",
+      "latitude": 12.9352,
+      "longitude": 77.6245,
+      "district": "Bengaluru",
+      "constituency": "Bangalore South",
+      "amenities": {
+        "pwdAccess": true,
+        "parkingAvailable": true,
+        "refreshments": true,
+        "wheelchairRamp": true
+      },
+      "votingTiming": "7:00 AM - 6:00 PM"
+    }
+  ]
+}
