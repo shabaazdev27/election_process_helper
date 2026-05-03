@@ -24,7 +24,7 @@ export async function initUserProgressAction(userId: string) {
  */
 export async function saveUserPreferencesAction(userId: string, prefs: Record<string, unknown>) {
   return await firestoreAdmin.upsertUserProgress(userId, {
-    preferences: prefs,
+    preferences: prefs as Record<string, string | number | boolean | null>,
     onboarded: true,
   });
 }

@@ -27,6 +27,11 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "scratch/**",
     "coverage/**",
+    // Generated Playwright artifacts (minified, not project source):
+    "playwright-report/**",
+    "test-results/**",
+    // Vendor / downloaded reference data:
+    "electionguide-dev/**",
   ]),
 ]);
 

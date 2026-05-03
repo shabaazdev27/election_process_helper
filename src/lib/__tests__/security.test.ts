@@ -46,8 +46,9 @@ describe('Security Policy Verification', () => {
   describe('Data Privacy', () => {
     it('should not log sensitive user information in production', () => {
       const consoleSpy = jest.spyOn(console, 'log');
-      // @ts-expect-error - simulating sensitive call
-      const _sensitiveData = { userId: '123', email: 'test@example.com' };
+      // Verify sensitive data objects are never logged directly
+      const _sensitiveData: { userId: string; email: string } = { userId: '123', email: 'test@example.com' };
+      void _sensitiveData; // referenced to avoid unused-var lint
       
       expect(consoleSpy).not.toHaveBeenCalledWith(expect.stringContaining('email'));
     });

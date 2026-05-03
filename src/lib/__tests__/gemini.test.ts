@@ -46,7 +46,11 @@ describe('Gemini AI Integration (gemini.ts)', () => {
     it('throws when no credentials', () => {
       delete process.env.VERTEX_PROJECT_ID;
       delete process.env.GEMINI_API_KEY;
-      process.env.NODE_ENV = 'production';
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        writable: true,
+        configurable: true,
+      });
       
       expect(() => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports

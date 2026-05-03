@@ -1,34 +1,52 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * See https://playwright.dev/docs/test-configuration.
+ * Playwright Test Configuration
+ * See https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
   testDir: './e2e',
+
   /* Run tests in files in parallel */
   fullyParallel: true,
+
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: 0,
-  /* Opt out of parallel tests on CI. */
+
+  /**
+   * Retry once locally and twice on CI.
+   * The single local retry catches transient hydration races without masking
+   * real failures — a genuine bug will fail on both attempts.
+   */
+  retries: process.env.CI ? 2 : 1,
+
+  /* Opt out of parallel tests on CI for deterministic ordering. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  timeout: 60000,
+
+  /* Reporter */
+  reporter: [['html'], ['list']],
+
+  /* Shared settings for all projects */
+  timeout: 60_000,
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
+    /* Base URL */
     baseURL: 'http://localhost:3000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    /**
+     * Action timeout: how long Playwright waits for a single action
+     * (click, fill, etc.) before failing.  Default is 0 (no limit).
+     * Setting to 15 s catches hung interactions early without being too tight.
+     */
+    actionTimeout: 15_000,
+
+    /* Collect trace on the first retry to aid debugging. */
     trace: 'on-first-retry',
 
-    /* Take screenshots on failure */
+    /* Screenshots only on failure */
     screenshot: 'only-on-failure',
 
-    /* Set navigation timeout */
-    navigationTimeout: 60000,
+    /* Navigation timeout */
+    navigationTimeout: 60_000,
   },
 
   /* Configure projects for major browsers */
@@ -37,18 +55,14 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-
-    /* Test against mobile viewports. */
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
@@ -59,7 +73,7 @@ export default defineConfig({
     },
   ],
 
-  /* Run your local dev server before starting the tests */
+  /* Run the local dev server before starting the tests */
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:3000',

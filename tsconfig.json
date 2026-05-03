@@ -33,8 +33,6 @@
   "exclude": [
     "node_modules",
     "cypress",
-    "cypress.config.ts",
-    "src/lib/__tests__",
-    "src/components/__tests__"
+    "cypress.config.ts"
   ]
 }

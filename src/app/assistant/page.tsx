@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Send, 
-  Bot, 
-  User, 
-  Loader2, 
-  RotateCcw, 
+import {
+  Send,
+  Bot,
+  User,
+  Loader2,
+  RotateCcw,
   ExternalLink,
   ThumbsUp,
   ThumbsDown,
@@ -47,7 +46,7 @@ export default function AssistantPage() {
   const formatTime = (date: Date) => {
     try {
       return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    } catch (e) {
+    } catch (_error) {
       return "";
     }
   };
@@ -76,9 +75,9 @@ export default function AssistantPage() {
       const { csrfToken } = await csrfRes.json();
 
       // 2. Prepare history for the API
-      const historyForApi = messages.slice(-5).map(m => ({ 
-        role: m.role, 
-        content: m.content 
+      const historyForApi = messages.slice(-5).map(m => ({
+        role: m.role,
+        content: m.content
       }));
 
       // 3. Send message to API
@@ -111,7 +110,7 @@ export default function AssistantPage() {
       setMessages((prev) => [...prev, assistantMessage]);
 
       const reader = response.body?.getReader?.();
-      
+
       if (reader) {
         const decoder = new TextDecoder();
         let fullContent = "";
@@ -120,7 +119,7 @@ export default function AssistantPage() {
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
           fullContent += chunk;
-          
+
           setMessages((prev) => {
             const lastIndex = prev.findIndex(m => m.id === assistantMessageId);
             if (lastIndex !== -1) {
@@ -147,9 +146,9 @@ export default function AssistantPage() {
       console.error("Chat Error:", error);
       const errorMessage = error instanceof Error && (error.message.includes("Rate limit") || error.message.includes("429"))
         ? "You've reached the message limit for guests. Please sign in to continue or try again in a minute."
-        : error instanceof Error && error.message.includes("billing") 
-        ? "The AI service is temporarily unavailable due to quota or billing limits. Please try again later."
-        : "I'm sorry, I'm having trouble connecting right now. Please try again later.";
+        : error instanceof Error && error.message.includes("billing")
+          ? "The AI service is temporarily unavailable due to quota or billing limits. Please try again later."
+          : "I'm sorry, I'm having trouble connecting right now. Please try again later.";
 
       setMessages((prev) => [
         ...prev,
@@ -182,7 +181,7 @@ export default function AssistantPage() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <button 
+          <button
             onClick={() => setMessages([INITIAL_MESSAGE])}
             className="p-2 hover:bg-neutral-100 rounded-lg transition-colors text-foreground/40"
             title="Reset Conversation"
@@ -204,24 +203,22 @@ export default function AssistantPage() {
               role="article"
               aria-label={`${m.role === "assistant" ? "Assistant" : "You"} said:`}
             >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                m.role === "assistant" ? "bg-primary text-white" : "bg-neutral-200 text-neutral-600"
-              }`} aria-hidden="true">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${m.role === "assistant" ? "bg-primary text-white" : "bg-neutral-200 text-neutral-600"
+                }`} aria-hidden="true">
                 {m.role === "assistant" ? <Bot className="h-5 w-5" /> : <User className="h-5 w-5" />}
               </div>
-              
+
               <div className={`flex flex-col gap-2 max-w-[80%] ${m.role === "user" ? "items-end" : ""}`}>
-                <div className={`p-4 rounded-2xl ${
-                  m.role === "assistant" 
-                    ? "bg-card border border-border shadow-sm text-foreground" 
+                <div className={`p-4 rounded-2xl ${m.role === "assistant"
+                    ? "bg-card border border-border shadow-sm text-foreground"
                     : "bg-primary text-white"
-                }`}>
+                  }`}>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">{m.content}</p>
-                  
+
                   {m.sources && (
                     <div className="mt-4 pt-4 border-t border-border flex flex-wrap gap-2">
                       {m.sources.map((source, i) => (
-                        <a 
+                        <a
                           key={i}
                           href={source.url}
                           target="_blank"
@@ -235,7 +232,7 @@ export default function AssistantPage() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex items-center gap-4 px-2">
                   <span className="text-[10px] text-foreground/40 font-medium" suppressHydrationWarning={true}>
                     {formatTime(m.timestamp)}
@@ -254,9 +251,9 @@ export default function AssistantPage() {
               </div>
             </div>
           ))}
-          
+
           {isLoading && (
-            <div 
+            <div
               className="flex gap-4"
               aria-live="assertive"
               aria-label="Assistant is generating response"
@@ -275,7 +272,7 @@ export default function AssistantPage() {
 
       {/* Input Area */}
       <div className="border-t border-border bg-card p-6">
-        <form 
+        <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSend();
@@ -305,7 +302,7 @@ export default function AssistantPage() {
               rows={1}
               disabled={isLoading}
             />
-            <button 
+            <button
               type="button"
               onClick={handleSend}
               disabled={isLoading}
@@ -317,7 +314,7 @@ export default function AssistantPage() {
             </button>
           </div>
           <p className="mt-4 text-[10px] text-center text-foreground/40">
-            AI responses are generated based on official government records. Always verify with your local election office. 
+            AI responses are generated based on official government records. Always verify with your local election office.
             For further assistance, contact our <a href="mailto:khanshabaaz05@gmail.com" className="text-primary hover:underline">Help Center</a>.
           </p>
         </form>
