@@ -7,11 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
-    "mcp": "playwright-mcp-server"
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "mcp": "playwright-mcp-server",
+    "validate": "npm run type-check && npm run lint && npm test"
   },
   "dependencies": {
     "@google-cloud/firestore": "^8.5.0",

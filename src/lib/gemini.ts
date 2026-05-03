@@ -37,7 +37,7 @@ const apiKey = process.env.GEMINI_API_KEY;
  */
 export const client = projectId
   ? new GoogleGenAI({ project: projectId, location: location })
-  : new GoogleGenAI({ apiKey: apiKey });
+  : new GoogleGenAI(apiKey ? { apiKey } : {});
 
 if (!projectId && !apiKey && process.env.NODE_ENV !== "test") {
   throw new Error("Neither VERTEX_PROJECT_ID nor GEMINI_API_KEY is defined");

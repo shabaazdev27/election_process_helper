@@ -102,7 +102,7 @@ describe('Home Page', () => {
       render(<Home />);
       
       const processLinks = screen.getAllByText('View Guide');
-      const firstLink = processLinks[0].closest('a');
+      const firstLink = processLinks[0]?.closest('a');
       expect(firstLink).toHaveAttribute('href', '/process');
     });
 
@@ -110,7 +110,7 @@ describe('Home Page', () => {
       render(<Home />);
       
       const processLinks = screen.getAllByText('View Guide');
-      const secondLink = processLinks[1].closest('a');
+      const secondLink = processLinks[1]?.closest('a');
       expect(secondLink).toHaveAttribute('href', '/timeline');
     });
 
@@ -118,7 +118,7 @@ describe('Home Page', () => {
       render(<Home />);
       
       const processLinks = screen.getAllByText('View Guide');
-      const thirdLink = processLinks[2].closest('a');
+      const thirdLink = processLinks[2]?.closest('a');
       expect(thirdLink).toHaveAttribute('href', '/assistant');
     });
   });

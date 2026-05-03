@@ -210,9 +210,9 @@ function createNotificationFromUpdate(update: EciUpdate): Notification {
 
   return {
     id: `notif-${Date.now()}`,
-    type: template.type,
-    title: template.title,
-    message: template.message,
+    type: template?.type || 'general_update',
+    title: template?.title || 'ECI Update',
+    message: template?.message || 'New information available',
     sourceUrl: update.sourceUrl,
     timestamp: update.detectedAt,
   };

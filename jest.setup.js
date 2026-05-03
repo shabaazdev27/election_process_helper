@@ -6,6 +6,25 @@ import '@testing-library/jest-dom'
  * Initializes testing environment and global mocks
  */
 
+// Fix for React 19 compatibility with testing-library
+// React 19 moved act to react package instead of react-dom/test-utils
+import { act as reactAct } from 'react';
+
+// Patch react-dom/test-utils to use React's act
+jest.mock('react-dom/test-utils', () => {
+  const originalModule = jest.requireActual('react-dom/test-utils');
+  return {
+    ...originalModule,
+    act: reactAct,
+  };
+});
+
+// Also ensure React.act is available globally
+if (typeof global.React === 'undefined') {
+  global.React = {};
+}
+global.React.act = reactAct;
+
 // Mock Google Cloud Pub/Sub
 jest.mock('@google-cloud/pubsub', () => ({
   PubSub: jest.fn().mockImplementation(() => ({

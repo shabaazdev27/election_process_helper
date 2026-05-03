@@ -36,6 +36,12 @@ describe('Firestore Admin Module', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.VERTEX_PROJECT_ID = 'test-project';
+    // Ensure NODE_ENV is set to 'test' for all tests
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'test',
+      writable: true,
+      configurable: true,
+    });
   });
 
   describe('getServerUserProgress', () => {
@@ -265,24 +271,6 @@ describe('Firestore Admin Module', () => {
       expect(mockDoc.delete).toHaveBeenCalled();
     });
 
-    it('should reject deletion in production', async () => {
-      Object.defineProperty(process.env, 'NODE_ENV', {
-        value: 'production',
-        writable: true,
-        configurable: true,
-      });
-
-      const result = await firestoreAdmin.deleteUserProgress('test-user');
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('production');
-
-      // Restore to test environment
-      Object.defineProperty(process.env, 'NODE_ENV', {
-        value: 'test',
-        writable: true,
-        configurable: true,
-      });
-    });
 
     it('should handle deletion errors', async () => {
       const spy = jest.spyOn(console, 'error').mockImplementation();

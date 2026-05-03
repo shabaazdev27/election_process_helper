@@ -41,7 +41,7 @@ export function getFirestore(): Firestore {
         'Firestore initialization failed: VERTEX_PROJECT_ID or GOOGLE_CLOUD_PROJECT not set'
       );
     }
-    _firestore = new Firestore({ projectId });
+    _firestore = new Firestore(projectId ? { projectId } : {});
   }
   return _firestore;
 }

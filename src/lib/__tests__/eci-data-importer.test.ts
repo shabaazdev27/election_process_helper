@@ -147,10 +147,10 @@ describe('ECI Data Importer', () => {
       const result = await batchGeocodeBooths(rawBooths);
 
       expect(result).toHaveLength(2);
-      expect(result[0].id).toBe('TN-CHEN-001');
-      expect(result[0].latitude).toBeDefined();
-      expect(result[0].longitude).toBeDefined();
-      expect(result[0].amenities.pwdAccess).toBe(true);
+      expect(result[0]?.id).toBe('TN-CHEN-001');
+      expect(result[0]?.latitude).toBeDefined();
+      expect(result[0]?.longitude).toBeDefined();
+      expect(result[0]?.amenities.pwdAccess).toBe(true);
     });
 
     test('✓ Reports progress via callback', async () => {
@@ -214,7 +214,7 @@ describe('ECI Data Importer', () => {
       const result = await batchGeocodeBooths(rawBooths);
 
       expect(result).toHaveLength(1);
-      expect(result[0].boothNumber).toBe('001');
+      expect(result[0]?.boothNumber).toBe('001');
     });
 
     test('✓ Uses existing coordinates when available', async () => {
@@ -238,8 +238,8 @@ describe('ECI Data Importer', () => {
 
       const result = await batchGeocodeBooths(rawBooths);
 
-      expect(result[0].latitude).toBe(13.05);
-      expect(result[0].longitude).toBe(80.25);
+      expect(result[0]?.latitude).toBe(13.05);
+      expect(result[0]?.longitude).toBe(80.25);
     });
   });
 
@@ -342,7 +342,7 @@ describe('ECI Data Importer', () => {
       // Note: Address length validation is not currently enforced at the batch level
       // The function processes the data and relies on downstream validation
       expect(result).toHaveLength(1); // Currently accepts long addresses
-      expect(result[0].address.length).toBeGreaterThan(500);
+      expect(result[0]?.address.length).toBeGreaterThan(500);
     });
 
     test('✓ Validates state code format', async () => {

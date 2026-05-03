@@ -116,7 +116,7 @@ export interface EciUpdate {
   /** What changed (e.g., 'election_schedule', 'new_form_released') */
   updateType: string;
   /** Previous value (if applicable) */
-  previousValue?: string;
+  previousValue?: string | undefined;
   /** New value */
   newValue: string;
   /** ECI source URL */

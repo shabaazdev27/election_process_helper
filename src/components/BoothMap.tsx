@@ -24,11 +24,11 @@ export const BoothMap: React.FC<BoothMapProps> = ({
     if (booths.length === 0) return null;
 
     const lats = [
-      userLatitude || booths[0].latitude,
+      userLatitude || booths[0]?.latitude || 0,
       ...booths.map((b) => b.latitude),
     ];
     const lons = [
-      userLongitude || booths[0].longitude,
+      userLongitude || booths[0]?.longitude || 0,
       ...booths.map((b) => b.longitude),
     ];
 

@@ -108,7 +108,7 @@ function getClientIp(req: NextRequest): string {
   const direct = req.headers.get('x-real-ip');
 
   return forwarded
-    ? forwarded.split(',')[0].trim()
+    ? forwarded.split(',')[0]?.trim() ?? 'unknown'
     : cloudflare || direct || 'unknown';
 }
 
@@ -260,7 +260,7 @@ Reference the user's progress context in your response when relevant.
     })) || [];
 
     // Ensure history alternation: user, model, user, model, ...
-    while (formattedHistory.length > 0 && formattedHistory[0].role !== 'user') {
+    while (formattedHistory.length > 0 && formattedHistory[0]?.role !== 'user') {
       formattedHistory.shift();
     }
 

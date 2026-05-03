@@ -16,8 +16,8 @@ import { getDirectionsUrl } from '@/lib/maps';
 
 interface BoothCardProps {
   booth: PollingBooth & { distanceKm?: number };
-  userLatitude?: number;
-  userLongitude?: number;
+  userLatitude: number | undefined;
+  userLongitude: number | undefined;
 }
 
 /**

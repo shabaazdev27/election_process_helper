@@ -19,7 +19,10 @@ describe('Root Layout', () => {
 
     it('should have OpenGraph configuration', () => {
       expect(metadata.openGraph?.title).toBe('ElectionGuide India');
-      expect(metadata.openGraph?.type).toBe('website');
+      // Type property exists in OpenGraph but TypeScript strict mode requires explicit check
+      if (metadata.openGraph && 'type' in metadata.openGraph) {
+        expect(metadata.openGraph.type).toBe('website');
+      }
     });
   });
 

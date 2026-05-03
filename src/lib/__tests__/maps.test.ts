@@ -53,8 +53,8 @@ describe('Maps Library', () => {
 
       // Verify sorting
       for (let i = 1; i < booths.length; i++) {
-        expect(booths[i].distanceKm).toBeGreaterThanOrEqual(
-          booths[i - 1].distanceKm
+        expect(booths[i]?.distanceKm).toBeGreaterThanOrEqual(
+          booths[i - 1]?.distanceKm ?? 0
         );
       }
     });
@@ -77,7 +77,7 @@ describe('Maps Library', () => {
       const results = await searchBooths('001', 'TN');
 
       expect(results.length).toBeGreaterThan(0);
-      expect(results[0].boothNumber).toContain('001');
+      expect(results[0]?.boothNumber).toContain('001');
     });
 
     it('should find booths by name', async () => {
@@ -85,8 +85,8 @@ describe('Maps Library', () => {
 
       expect(results.length).toBeGreaterThan(0);
       expect(
-        results[0].name.toLowerCase().includes('school') ||
-          results[0].address.toLowerCase().includes('school')
+        results[0]?.name.toLowerCase().includes('school') ||
+          results[0]?.address.toLowerCase().includes('school')
       ).toBe(true);
     });
 
@@ -133,37 +133,37 @@ describe('Maps Library', () => {
       expect(booths.length).toBeGreaterThan(0);
 
       const booth = booths[0];
-      expect(booth.id).toBeDefined();
-      expect(booth.boothNumber).toBeDefined();
-      expect(booth.name).toBeDefined();
-      expect(booth.address).toBeDefined();
-      expect(booth.latitude).toBeDefined();
-      expect(booth.longitude).toBeDefined();
-      expect(booth.district).toBeDefined();
-      expect(booth.constituency).toBeDefined();
-      expect(booth.amenities).toBeDefined();
-      expect(booth.votingTiming).toBeDefined();
-      expect(booth.distanceKm).toBeDefined();
+      expect(booth?.id).toBeDefined();
+      expect(booth?.boothNumber).toBeDefined();
+      expect(booth?.name).toBeDefined();
+      expect(booth?.address).toBeDefined();
+      expect(booth?.latitude).toBeDefined();
+      expect(booth?.longitude).toBeDefined();
+      expect(booth?.district).toBeDefined();
+      expect(booth?.constituency).toBeDefined();
+      expect(booth?.amenities).toBeDefined();
+      expect(booth?.votingTiming).toBeDefined();
+      expect(booth?.distanceKm).toBeDefined();
     });
 
     it('should have valid amenities object', async () => {
       const booths = await findNearbyBooths(13.0827, 80.2707, 'TN', 5, 1);
 
       const booth = booths[0];
-      expect(typeof booth.amenities.pwdAccess).toBe('boolean');
-      expect(typeof booth.amenities.parkingAvailable).toBe('boolean');
-      expect(typeof booth.amenities.refreshments).toBe('boolean');
-      expect(typeof booth.amenities.wheelchairRamp).toBe('boolean');
+      expect(typeof booth?.amenities.pwdAccess).toBe('boolean');
+      expect(typeof booth?.amenities.parkingAvailable).toBe('boolean');
+      expect(typeof booth?.amenities.refreshments).toBe('boolean');
+      expect(typeof booth?.amenities.wheelchairRamp).toBe('boolean');
     });
 
     it('should have valid coordinates', async () => {
       const booths = await findNearbyBooths(13.0827, 80.2707, 'TN', 5, 1);
 
       const booth = booths[0];
-      expect(booth.latitude).toBeGreaterThanOrEqual(-90);
-      expect(booth.latitude).toBeLessThanOrEqual(90);
-      expect(booth.longitude).toBeGreaterThanOrEqual(-180);
-      expect(booth.longitude).toBeLessThanOrEqual(180);
+      expect(booth?.latitude).toBeGreaterThanOrEqual(-90);
+      expect(booth?.latitude).toBeLessThanOrEqual(90);
+      expect(booth?.longitude).toBeGreaterThanOrEqual(-180);
+      expect(booth?.longitude).toBeLessThanOrEqual(180);
     });
   });
 });

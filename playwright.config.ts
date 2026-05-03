@@ -21,7 +21,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 1,
 
   /* Opt out of parallel tests on CI for deterministic ordering. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 4,
 
   /* Reporter */
   reporter: [['html'], ['list']],

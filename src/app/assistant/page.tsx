@@ -124,7 +124,10 @@ export default function AssistantPage() {
             const lastIndex = prev.findIndex(m => m.id === assistantMessageId);
             if (lastIndex !== -1) {
               const newMessages = [...prev];
-              newMessages[lastIndex] = { ...newMessages[lastIndex], content: fullContent };
+              const existingMessage = newMessages[lastIndex];
+              if (existingMessage) {
+                newMessages[lastIndex] = { ...existingMessage, content: fullContent };
+              }
               return newMessages;
             }
             return prev;
@@ -136,7 +139,10 @@ export default function AssistantPage() {
           const lastIndex = prev.findIndex(m => m.id === assistantMessageId);
           if (lastIndex !== -1) {
             const newMessages = [...prev];
-            newMessages[lastIndex] = { ...newMessages[lastIndex], content: fullContent };
+            const existingMessage = newMessages[lastIndex];
+            if (existingMessage) {
+              newMessages[lastIndex] = { ...existingMessage, content: fullContent };
+            }
             return newMessages;
           }
           return prev;

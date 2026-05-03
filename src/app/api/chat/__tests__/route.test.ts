@@ -39,14 +39,22 @@ jest.mock('@/lib/translate', () => ({
 }));
 
 describe('Chat API Route', () => {
+  beforeEach(() => {
+    // Clear rate limit store before each test
+    jest.clearAllMocks();
+  });
+
   /**
    * CSRF test: re-import route.ts with NODE_ENV=production so the IS_TEST
    * flag evaluates to false and the CSRF guard is active.
    */
   it('should reject requests with missing CSRF token', async () => {
-    const originalEnv = process.env.NODE_ENV;
+    const _originalEnv = process.env.NODE_ENV;
+    
     // Override to disable the IS_TEST bypass inside route.ts
     (process.env as Record<string, string>).NODE_ENV = 'production';
+    delete process.env.PLAYWRIGHT_TEST_REMOTE_URL;
+    delete process.env.CI;
 
     let POST: (req: NextRequest) => Promise<Response>;
     jest.isolateModules(() => {
@@ -65,7 +73,7 @@ describe('Chat API Route', () => {
     expect(body.error).toBe('Invalid security token');
 
     // Restore original NODE_ENV
-    (process.env as Record<string, string>).NODE_ENV = originalEnv;
+    (process.env as Record<string, string>).NODE_ENV = _originalEnv;
   });
 
   it('should accept requests with valid CSRF token and cookie', async () => {

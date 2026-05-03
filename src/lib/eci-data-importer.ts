@@ -59,7 +59,7 @@ class RateLimiter {
     this.requests = this.requests.filter((time) => now - time < this.windowMs);
 
     if (this.requests.length >= this.maxRequests) {
-      const oldestRequest = this.requests[0];
+      const oldestRequest = this.requests[0] ?? now;
       const waitTime = this.windowMs - (now - oldestRequest);
       
       if (waitTime > 0) {
@@ -272,10 +272,10 @@ export async function importEciData(
   try {
     // Parse CSV (simple implementation, use csv-parse in production)
     const lines = csvData.trim().split('\n');
-    const headers = lines[0].split(',');
+    const headers = lines[0]?.split(',') ?? [];
     
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',');
+      const values = lines[i]?.split(',') ?? [];
       const row: Record<string, unknown> = {};
       
       headers.forEach((header, index) => {

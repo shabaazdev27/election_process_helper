@@ -238,7 +238,7 @@ export default function QuizPage() {
   const handleConfirm = () => {
     if (selectedOption === null) return;
     setIsAnswered(true);
-    if (selectedOption === questions[currentQuestion].answer) {
+    if (selectedOption === questions[currentQuestion]?.answer) {
       setScore(score + 1);
     }
   };
@@ -342,12 +342,12 @@ export default function QuizPage() {
         >
           <div className="p-8 bg-card border border-border rounded-[2.5rem] shadow-sm">
             <h2 className="text-xl md:text-2xl font-bold font-poppins leading-snug">
-              {q.question}
+              {q?.question}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {q.options.map((option, i) => (
+            {q?.options.map((option, i) => (
               <button
                 key={i}
                 onClick={() => handleOptionSelect(i)}
@@ -355,7 +355,7 @@ export default function QuizPage() {
                 className={`p-6 rounded-2xl border text-left transition-all flex items-center justify-between group ${
                   selectedOption === i 
                     ? isAnswered 
-                      ? i === q.answer ? "bg-success/5 border-success text-success" : "bg-secondary/5 border-secondary text-secondary"
+                      ? i === q?.answer ? "bg-success/5 border-success text-success" : "bg-secondary/5 border-secondary text-secondary"
                       : "bg-primary/5 border-primary text-primary"
                     : "bg-background border-border hover:border-primary/50"
                 }`}
@@ -364,12 +364,12 @@ export default function QuizPage() {
                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                   selectedOption === i 
                     ? isAnswered 
-                      ? i === q.answer ? "border-success bg-success text-white" : "border-secondary bg-secondary text-white"
+                      ? i === q?.answer ? "border-success bg-success text-white" : "border-secondary bg-secondary text-white"
                       : "border-primary bg-primary text-white"
                     : "border-border group-hover:border-primary/50"
                 }`}>
-                  {isAnswered && i === q.answer && <CheckCircle2 className="h-4 w-4" />}
-                  {isAnswered && selectedOption === i && i !== q.answer && <XCircle className="h-4 w-4" />}
+                  {isAnswered && i === q?.answer && <CheckCircle2 className="h-4 w-4" />}
+                  {isAnswered && selectedOption === i && i !== q?.answer && <XCircle className="h-4 w-4" />}
                 </div>
               </button>
             ))}
@@ -379,15 +379,15 @@ export default function QuizPage() {
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`p-6 rounded-2xl ${selectedOption === q.answer ? "bg-success/5 border border-success/20" : "bg-secondary/5 border border-secondary/20"}`}
+              className={`p-6 rounded-2xl ${selectedOption === q?.answer ? "bg-success/5 border border-success/20" : "bg-secondary/5 border border-secondary/20"}`}
               role="alert"
               aria-live="polite"
             >
               <div className="flex gap-3">
                 <Info className="h-5 w-5 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-sm mb-1">{selectedOption === q.answer ? "Correct!" : "Incorrect"}</p>
-                  <p className="text-sm opacity-80 leading-relaxed">{q.explanation}</p>
+                  <p className="font-bold text-sm mb-1">{selectedOption === q?.answer ? "Correct!" : "Incorrect"}</p>
+                  <p className="text-sm opacity-80 leading-relaxed">{q?.explanation}</p>
                 </div>
               </div>
             </motion.div>

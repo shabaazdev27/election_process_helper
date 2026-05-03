@@ -30,7 +30,7 @@ describe('Personalized Page', () => {
     jest.clearAllMocks();
     // Mock window.location.href
     delete (window as unknown as { location: unknown }).location;
-    window.location = { href: '' } as unknown as Location;
+    window.location = { href: '' } as Location & string;
   });
 
   describe('Step 1: State Selection', () => {

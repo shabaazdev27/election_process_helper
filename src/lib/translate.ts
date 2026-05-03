@@ -109,9 +109,8 @@ export async function translate(
   try {
     // Import Google Cloud Translation client (v2 API)
     const { v2 } = await import('@google-cloud/translate');
-    const translate = new v2.Translate({
-      projectId: process.env.GOOGLE_CLOUD_PROJECT,
-    });
+    const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+    const translate = new v2.Translate(projectId ? { projectId } : {});
 
     // Call Translation API
     const [translation] = await translate.translate(content, {
@@ -182,9 +181,8 @@ export async function translateBatch(
 export async function detectLanguage(content: string): Promise<LanguageCode> {
   try {
     const { v2 } = await import('@google-cloud/translate');
-    const translate = new v2.Translate({
-      projectId: process.env.GOOGLE_CLOUD_PROJECT,
-    });
+    const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+    const translate = new v2.Translate(projectId ? { projectId } : {});
 
     const [detection] = await translate.detect(content);
 
